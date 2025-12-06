@@ -36,21 +36,11 @@ BASENAME=$(basename "$MAIN_INO")
 rm "$SKETCH_PATH/$BASENAME"                        # remove original
 cp "$MAIN_INO" "$SKETCH_PATH/$SKETCH_NAME.ino"     # rename only once
 
-# Detect board
-PORT=$(arduino-cli board list | grep "Nano 33" | awk '{print $1}' | head -n1)
-
-if [ -z "$PORT" ]; then
-  echo "⚠️  No Arduino Nano 33 detected!"
-  rm -rf "$TMP_SKETCH_DIR"
-  exit 1
-fi
-
+# Simulate the compilation process (without uploading)
 echo "🔧 Compiling..."
 arduino-cli compile --fqbn "$BOARD" "$SKETCH_PATH"
 
-echo "🚀 Uploading to $PORT ..."
-arduino-cli upload -p "$PORT" --fqbn "$BOARD" "$SKETCH_PATH"
+echo "✅ Compilation complete!"
 
-echo "✅ Upload complete!"
-
+# Clean up
 rm -rf "$TMP_SKETCH_DIR"
